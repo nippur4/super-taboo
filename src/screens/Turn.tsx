@@ -1,0 +1,73 @@
+import { RondaDef } from '../constants';
+
+interface Props {
+  ronda: RondaDef;
+  equipoNombre: string;
+  equipoColor: string;
+  turnScore: number;
+  timeLeft: number;
+  timerPct: string;
+  urgente: boolean;
+  palabra: string;
+  categoria: string;
+  esRondaTaboo: boolean;
+  prohibidas: string[];
+  instruccion: string;
+  verRestantes: boolean;
+  restantesTxt: string;
+  verPasar: boolean;
+  onPasar: () => void;
+  onAcierto: () => void;
+}
+
+export default function Turn(p: Props) {
+  const timerColor = p.urgente ? '#FF4E45' : '#201233';
+  return (
+    <div className="screen turn" style={{ background: p.ronda.suave }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+          <div className="dot dot-14" style={{ background: p.equipoColor }} />
+          <div className="turn-equipo">{p.equipoNombre}</div>
+        </div>
+        <div className="turn-pill">+{p.turnScore} este turno</div>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, margin: '10px 0 4px' }}>
+        <div className="turn-timer" style={{ color: timerColor, animation: p.urgente ? 'pulsoUrgente 1s ease-in-out infinite' : 'none' }}>
+          {p.timeLeft}
+        </div>
+      </div>
+      <div className="turn-barra">
+        <div style={{ width: p.timerPct, background: timerColor }} />
+      </div>
+
+      <div className="word-card">
+        <div className="word-card-banda" style={{ background: p.ronda.color, color: p.ronda.texto }}>
+          <div className="word-card-ronda">{p.ronda.n}</div>
+          <div className="word-card-cat">{p.categoria}</div>
+        </div>
+        <div className="word-card-centro">
+          <div className="word-palabra">{p.palabra}</div>
+          {p.esRondaTaboo ? (
+            <div className="prohibidas-box">
+              <div className="prohibidas-head">PROHIBIDO DECIR</div>
+              {p.prohibidas.map((t, i) => (
+                <div key={i} className="prohibidas-fila">{t}</div>
+              ))}
+            </div>
+          ) : (
+            <div className="instruccion-pill">{p.instruccion}</div>
+          )}
+        </div>
+        {p.verRestantes && <div className="word-card-restantes">{p.restantesTxt}</div>}
+      </div>
+
+      <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+        {p.verPasar && (
+          <div className="btn-pasar press press-3" onClick={p.onPasar}>PASAR</div>
+        )}
+        <div className="btn-acierto press press-3" onClick={p.onAcierto}>¡ACIERTO! +1</div>
+      </div>
+    </div>
+  );
+}

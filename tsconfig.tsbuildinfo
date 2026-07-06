@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/ads.ts","./src/audio.ts","./src/constants.ts","./src/game.ts","./src/main.tsx","./src/palabras.ts","./src/screens/gameover.tsx","./src/screens/home.tsx","./src/screens/preturn.tsx","./src/screens/roundend.tsx","./src/screens/setup.tsx","./src/screens/timeup.tsx","./src/screens/turn.tsx","./capacitor.config.ts"],"version":"5.6.3"}
