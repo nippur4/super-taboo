@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.nico.supertaboo',
-  appName: 'Super Taboo',
+  appId: 'com.nico.decilosindecirlo',
+  appName: 'Decilo sin decirlo',
   webDir: 'dist',
 };
 

@@ -3,8 +3,8 @@ interface Props {
 }
 
 const RONDAS_INFO = [
-  { n: 'TABOO', color: '#FF4E45', texto: '#FAF4E8', desc: 'Describí la palabra sin decir ninguna de las 5 prohibidas. Un punto por acierto.' },
-  { n: 'UNA PALABRA', color: '#3E7BFF', texto: '#FAF4E8', desc: 'Una única palabra como pista, ni una más. Las prohibidas del Taboo siguen valiendo.' },
+  { n: 'PALABRAS PROHIBIDAS', color: '#FF4E45', texto: '#FAF4E8', desc: 'Describí la palabra sin decir ninguna de las 5 prohibidas. Un punto por acierto.' },
+  { n: 'UNA PALABRA', color: '#3E7BFF', texto: '#FAF4E8', desc: 'Una única palabra como pista, ni una más. Las palabras prohibidas siguen valiendo.' },
   { n: 'MÍMICA', color: '#FFC93C', texto: '#201233', desc: 'Prohibido hablar: solo gestos.' },
   { n: 'SONIDOS', color: '#9B5DE5', texto: '#FAF4E8', desc: 'Sin palabras y sin gestos: solo sonidos.' },
 ];
@@ -12,7 +12,7 @@ const RONDAS_INFO = [
 export default function Reglas({ onCerrar }: Props) {
   return (
     <div className="screen reglas">
-      <div className="setup-scroll" style={{ paddingBottom: 40 }}>
+      <div className="setup-scroll" style={{ paddingBottom: 'calc(40px + var(--sab) + var(--ad-h))' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
           <div className="btn-volver press press-2" onClick={onCerrar}>←</div>
           <div className="setup-titulo">REGLAS</div>
@@ -48,13 +48,13 @@ export default function Reglas({ onCerrar }: Props) {
 
         <div className="section-label">LOS MODOS</div>
         <div className="card-blanca reglas-texto">
-          <b>Taboo Clásico</b> — una sola ronda de Taboo con palabras sin fin.
+          <b>Clásico</b> — una sola ronda de Palabras Prohibidas con palabras sin fin.
           Termina cuando quieran, gana el que más puntos tiene.
           <br /><br />
-          <b>Super Taboo</b> — 3 rondas con el mismo mazo: Taboo, Una Palabra y Mímica.
+          <b>Super Decilo</b> — 3 rondas con el mismo mazo: Palabras Prohibidas, Una Palabra y Mímica.
           Como ya escucharon las palabras en la primera ronda, ¡la memoria es parte del juego!
           <br /><br />
-          <b>Super Taboo Extremo</b> — las 3 rondas más una final de Solo Sonidos.
+          <b>Decilo Extremo</b> — las 3 rondas más una final de Solo Sonidos.
           Para valientes.
         </div>
       </div>

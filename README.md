@@ -1,6 +1,8 @@
-# Super Taboo — app Android
+# Decilo sin decirlo — app Android
 
-Juego de fiesta para un solo teléfono que se pasa de mano en mano (Taboo + Mímica).
+Juego de fiesta para un solo teléfono que se pasa de mano en mano (palabras prohibidas + mímica).
+(El proyecto nació como "Super Taboo" y se renombró para evitar conflictos de marca con Hasbro;
+el ID de paquete es `com.nico.decilosindecirlo`.)
 Implementación fiel al diseño de [design_handoff_super_taboo/](design_handoff_super_taboo/) con
 **React + TypeScript + Vite**, empaquetada como app Android nativa con **Capacitor** y
 monetizada con **AdMob**.

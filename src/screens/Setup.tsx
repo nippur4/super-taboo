@@ -19,6 +19,7 @@ interface Props {
   porJugador: number;
   onPorJugador: (v: number) => void;
   totalPalabrasTxt: string;
+  palabrasPosibles: number;
   catsSel: string[];
   onToggleCat: (c: string) => void;
   onVolver: () => void;
@@ -121,7 +122,7 @@ export default function Setup(p: Props) {
           </>
         )}
 
-        <div className="section-label">CATEGORÍAS</div>
+        <div className="section-label">CATEGORÍAS · {p.palabrasPosibles} PALABRAS POSIBLES</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
           {CATEGORIAS.map((c) => {
             const activa = p.catsSel.includes(c);

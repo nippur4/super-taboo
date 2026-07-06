@@ -222,6 +222,7 @@ export default function App() {
           porJugador={g.porJugador}
           onPorJugador={(porJugador) => setG({ ...g, porJugador })}
           totalPalabrasTxt={totalPalabrasTxt}
+          palabrasPosibles={disponibles}
           catsSel={g.catsSel}
           onToggleCat={(c) => setG({
             ...g,
