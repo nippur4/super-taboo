@@ -10,9 +10,10 @@ const FICHAS = [
 
 interface Props {
   onElegir: (mode: Mode) => void;
+  onVerReglas: () => void;
 }
 
-export default function Home({ onElegir }: Props) {
+export default function Home({ onElegir, onVerReglas }: Props) {
   return (
     <div className="screen home">
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
@@ -59,6 +60,8 @@ export default function Home({ onElegir }: Props) {
           </div>
         </div>
       </div>
+
+      <div className="link-menu" style={{ marginTop: 24 }} onClick={onVerReglas}>Ver reglas</div>
     </div>
   );
 }

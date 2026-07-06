@@ -11,6 +11,7 @@ interface Props {
   palabra: string;
   categoria: string;
   esRondaTaboo: boolean;
+  verProhibidas: boolean;
   prohibidas: string[];
   instruccion: string;
   verRestantes: boolean;
@@ -18,6 +19,7 @@ interface Props {
   verPasar: boolean;
   onPasar: () => void;
   onAcierto: () => void;
+  onFalta: () => void;
 }
 
 export default function Turn(p: Props) {
@@ -48,25 +50,27 @@ export default function Turn(p: Props) {
         </div>
         <div className="word-card-centro">
           <div className="word-palabra">{p.palabra}</div>
-          {p.esRondaTaboo ? (
+          {!p.esRondaTaboo && <div className="instruccion-pill">{p.instruccion}</div>}
+          {p.verProhibidas && (
             <div className="prohibidas-box">
               <div className="prohibidas-head">PROHIBIDO DECIR</div>
               {p.prohibidas.map((t, i) => (
                 <div key={i} className="prohibidas-fila">{t}</div>
               ))}
             </div>
-          ) : (
-            <div className="instruccion-pill">{p.instruccion}</div>
           )}
         </div>
         {p.verRestantes && <div className="word-card-restantes">{p.restantesTxt}</div>}
       </div>
 
-      <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-        {p.verPasar && (
-          <div className="btn-pasar press press-3" onClick={p.onPasar}>PASAR</div>
-        )}
-        <div className="btn-acierto press press-3" onClick={p.onAcierto}>¡ACIERTO! +1</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+        <div style={{ display: 'flex', gap: 10 }}>
+          {p.verPasar && (
+            <div className="btn-pasar press press-3" onClick={p.onPasar}>PASAR</div>
+          )}
+          <div className="btn-acierto press press-3" onClick={p.onAcierto}>¡ACIERTO! +1</div>
+        </div>
+        <div className="btn-falta press press-3" onClick={p.onFalta}>FALTA — TERMINAR TURNO</div>
       </div>
     </div>
   );

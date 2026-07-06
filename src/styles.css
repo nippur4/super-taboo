@@ -430,6 +430,56 @@ input::placeholder { color: var(--placeholder); }
   cursor: pointer;
 }
 
+.btn-falta {
+  background: #FFE3E1;
+  border: 3px solid var(--tinta);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--tinta);
+  padding: 10px 8px;
+  text-align: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  color: #C22F28;
+  cursor: pointer;
+}
+
+/* ══════════ Sorteo ══════════ */
+.sorteo {
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--sat) + 28px) 24px calc(28px + var(--sab));
+  background: var(--crema);
+}
+.sorteo-titulo {
+  text-align: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 44px;
+  line-height: 1.05;
+  margin: 14px 0 8px;
+  text-wrap: balance;
+}
+.sorteo-card {
+  background: #FFFFFF;
+  border: 3px solid var(--tinta);
+  border-radius: 20px;
+  box-shadow: 5px 5px 0 var(--tinta);
+  padding: 26px 20px;
+  margin: 26px 0 20px;
+  text-align: center;
+}
+@keyframes popSorteo {
+  0% { transform: scale(.92); }
+  55% { transform: scale(1.08) rotate(-2deg); }
+  100% { transform: scale(1); }
+}
+.sorteo-card.pop { animation: popSorteo .45s ease-out; }
+
+/* ══════════ Reglas ══════════ */
+.reglas { background: var(--crema); display: flex; flex-direction: column; }
+.reglas-texto { font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--texto-3); }
+.reglas-texto b { color: var(--tinta); font-weight: 800; }
+
 /* ══════════ ¡Tiempo! ══════════ */
 .timeup {
   display: flex;

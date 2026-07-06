@@ -44,3 +44,4 @@ export function sonidoAcierto() { beep(660, 0.09, 'triangle', 0.3); beep(990, 0.
 export function sonidoBuzzer() { beep(520, 0.55, 'sawtooth', 0.4, 0, 180); beep(392, 0.55, 'sawtooth', 0.3, 0.12, 140); }
 export function sonidoRonda() { beep(523, 0.12, 'triangle', 0.3); beep(659, 0.12, 'triangle', 0.3, 0.11); beep(784, 0.22, 'triangle', 0.32, 0.22); }
 export function sonidoTic() { beep(1150, 0.05, 'square', 0.2); }
+export function sonidoFalta() { beep(220, 0.18, 'square', 0.32); beep(160, 0.3, 'square', 0.32, 0.14); }

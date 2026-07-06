@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import { COLORES_EQUIPO, MODOS, RONDAS, INSTRUCCIONES, SEGUNDOS_AVISO, Mode } from './constants';
 import { GameState, ESTADO_INICIAL, armarPartida, mezclar, palabrasFiltradas } from './game';
-import { desbloquearAudio, vibrar, sonidoAcierto, sonidoBuzzer, sonidoRonda, sonidoTic } from './audio';
+import { desbloquearAudio, vibrar, sonidoAcierto, sonidoBuzzer, sonidoRonda, sonidoTic, sonidoFalta } from './audio';
 import { initAds, mostrarBanner, ocultarBanner, prepararInterstitial, mostrarInterstitial } from './ads';
 import Home from './screens/Home';
 import Setup from './screens/Setup';
+import Sorteo from './screens/Sorteo';
 import PreTurn from './screens/PreTurn';
 import Turn from './screens/Turn';
 import TimeUp from './screens/TimeUp';
 import RoundEnd from './screens/RoundEnd';
 import GameOver from './screens/GameOver';
+import Reglas from './screens/Reglas';
 
 export default function App() {
   const [g, setG] = useState<GameState>(ESTADO_INICIAL);
+  const [verReglas, setVerReglas] = useState(false);
   const gRef = useRef(g);
   gRef.current = g;
   const intRef = useRef<number | null>(null);
@@ -80,13 +83,25 @@ export default function App() {
   const empezarPartida = () => {
     const base = armarPartida(g);
     if (!base.deck.length) return;
-    setG({ ...g, ...base, screen: 'preturn' });
+    desbloquearAudio();
+    // el equipo que empieza se sortea; la ruleta de la pantalla de sorteo cae ahí
+    const teamIdx = Math.floor(Math.random() * g.teams.length);
+    setG({ ...g, ...base, teamIdx, screen: 'sorteo' });
   };
 
   const empezarTurno = () => {
     desbloquearAudio();
-    setG({ ...gRef.current, timeLeft: g.tiempo, turnScore: 0, running: true, screen: 'turn' });
+    setG({ ...gRef.current, timeLeft: g.tiempo, turnScore: 0, running: true, falta: false, screen: 'turn' });
     arrancarTimer();
+  };
+
+  const falta = () => {
+    const s = gRef.current;
+    if (!s.running) return;
+    pararTimer();
+    sonidoFalta();
+    vibrar([200, 80, 200]);
+    setG({ ...s, running: false, falta: true, screen: 'timeup' });
   };
 
   const acierto = () => {
@@ -144,7 +159,8 @@ export default function App() {
   const jugarDeNuevo = () => {
     mostrarInterstitial();
     const base = armarPartida(g);
-    setG({ ...g, ...base, screen: 'preturn', turnScore: 0 });
+    const teamIdx = Math.floor(Math.random() * g.teams.length);
+    setG({ ...g, ...base, teamIdx, screen: 'sorteo', turnScore: 0 });
   };
 
   const salirMenuDesdeResultados = () => {
@@ -173,9 +189,13 @@ export default function App() {
     bg: i === g.teamIdx && g.screen === 'preturn' ? '#FFFFFF' : 'rgba(255,255,255,0.55)',
   }));
 
+  if (verReglas) {
+    return <Reglas onCerrar={() => setVerReglas(false)} />;
+  }
+
   switch (g.screen) {
     case 'home':
-      return <Home onElegir={elegirModo} />;
+      return <Home onElegir={elegirModo} onVerReglas={() => setVerReglas(true)} />;
 
     case 'setup': {
       const disponibles = palabrasFiltradas(g.catsSel).length;
@@ -213,6 +233,16 @@ export default function App() {
       );
     }
 
+    case 'sorteo':
+      return (
+        <Sorteo
+          key={g.deck.length + '-' + g.teamIdx}
+          teams={g.teams}
+          targetIdx={g.teamIdx}
+          onListo={() => setG({ ...gRef.current, screen: 'preturn' })}
+        />
+      );
+
     case 'preturn':
       return (
         <PreTurn
@@ -243,6 +273,7 @@ export default function App() {
           palabra={carta ? carta.p : ''}
           categoria={carta ? carta.c.toUpperCase() : ''}
           esRondaTaboo={rondaKey === 'taboo'}
+          verProhibidas={rondaKey === 'taboo' || rondaKey === 'palabra'}
           prohibidas={carta ? carta.x : []}
           instruccion={INSTRUCCIONES[rondaKey] || ''}
           verRestantes={!modo.infinito}
@@ -250,12 +281,14 @@ export default function App() {
           verPasar={g.pasar && g.pool.length > 1}
           onPasar={pasar}
           onAcierto={acierto}
+          onFalta={falta}
         />
       );
 
     case 'timeup':
       return (
         <TimeUp
+          titulo={g.falta ? '¡FALTA!' : '¡TIEMPO!'}
           equipoNombre={nombreEquipo(g.teamIdx)}
           turnScore={g.turnScore}
           siguienteNombre={nombreEquipo((g.teamIdx + 1) % nEq)}

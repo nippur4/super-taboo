@@ -1,4 +1,5 @@
 interface Props {
+  titulo: string;
   equipoNombre: string;
   turnScore: number;
   siguienteNombre: string;
@@ -8,7 +9,7 @@ interface Props {
 export default function TimeUp(p: Props) {
   return (
     <div className="screen timeup">
-      <div className="timeup-titulo">¡TIEMPO!</div>
+      <div className="timeup-titulo">{p.titulo}</div>
       <div className="timeup-card">
         <div className="timeup-sumo">{p.equipoNombre} SUMÓ</div>
         <div className="timeup-plus">+{p.turnScore}</div>

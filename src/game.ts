@@ -2,7 +2,7 @@ import { Mode } from './constants';
 import { MODOS } from './constants';
 import { PALABRAS, CATEGORIAS, Palabra } from './palabras';
 
-export type Screen = 'home' | 'setup' | 'preturn' | 'turn' | 'timeup' | 'roundend' | 'gameover';
+export type Screen = 'home' | 'setup' | 'sorteo' | 'preturn' | 'turn' | 'timeup' | 'roundend' | 'gameover';
 
 export interface Team {
   name: string;
@@ -25,6 +25,8 @@ export interface GameState {
   timeLeft: number;
   turnScore: number;
   running: boolean;
+  // true si el turno terminó por falta (y no por tiempo)
+  falta: boolean;
 }
 
 export const ESTADO_INICIAL: GameState = {
@@ -43,6 +45,7 @@ export const ESTADO_INICIAL: GameState = {
   timeLeft: 0,
   turnScore: 0,
   running: false,
+  falta: false,
 };
 
 export function mezclar<T>(arr: T[]): T[] {
