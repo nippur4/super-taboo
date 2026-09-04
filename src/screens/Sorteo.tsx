@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { COLORES_EQUIPO } from '../constants';
 import { Team } from '../game';
 import { sonidoTic, sonidoRonda, vibrar } from '../audio';
 
@@ -52,7 +51,7 @@ export default function Sorteo({ teams, targetIdx, onListo }: Props) {
 
       <div className={`sorteo-card${done ? ' pop' : ''}`}>
         <div className="preturn-letoca">{done ? 'EMPIEZA' : 'SORTEANDO…'}</div>
-        <div className="preturn-equipo" style={{ color: COLORES_EQUIPO[idx] }}>{nombre}</div>
+        <div className="preturn-equipo" style={{ color: teams[idx]?.color }}>{nombre}</div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 26 }}>
@@ -60,7 +59,7 @@ export default function Sorteo({ teams, targetIdx, onListo }: Props) {
           <div
             key={i}
             className="dot dot-18"
-            style={{ background: COLORES_EQUIPO[i], opacity: i === idx ? 1 : 0.35, transform: i === idx ? 'scale(1.2)' : 'scale(1)', transition: 'opacity .1s, transform .1s' }}
+            style={{ background: teams[i].color, opacity: i === idx ? 1 : 0.35, transform: i === idx ? 'scale(1.2)' : 'scale(1)', transition: 'opacity .1s, transform .1s' }}
           />
         ))}
       </div>

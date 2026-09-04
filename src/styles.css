@@ -261,6 +261,19 @@ input::placeholder { color: var(--placeholder); }
   color: var(--atenuado);
   cursor: pointer;
 }
+/* Selector de color por equipo */
+.color-picker { display: flex; gap: 10px; padding-left: 30px; }
+.color-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid var(--tinta);
+  cursor: pointer;
+  transition: transform .1s;
+}
+.color-swatch.activo { box-shadow: 0 0 0 3px var(--crema), 0 0 0 6px var(--tinta); }
+.color-swatch.activo:active { transform: scale(0.92); }
+.color-swatch.usado { opacity: 0.25; cursor: default; }
 .chip-tiempo {
   flex: 1;
   text-align: center;

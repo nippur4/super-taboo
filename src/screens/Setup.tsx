@@ -1,4 +1,3 @@
-import { COLORES_EQUIPO } from '../constants';
 import { CATEGORIAS } from '../palabras';
 import { Team } from '../game';
 
@@ -6,7 +5,9 @@ interface Props {
   titulo: string;
   sub: string;
   teams: Team[];
+  coloresPaleta: string[];
   onRename: (i: number, name: string) => void;
+  onColor: (i: number, color: string) => void;
   onRemove: (i: number) => void;
   onAgregar: () => void;
   tiempo: number;
@@ -39,19 +40,35 @@ export default function Setup(p: Props) {
         </div>
 
         <div className="section-label">EQUIPOS</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {p.teams.map((eq, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div className="dot dot-18" style={{ background: COLORES_EQUIPO[i] }} />
-              <input
-                className="team-input"
-                value={eq.name}
-                placeholder="Nombre del equipo"
-                onChange={(e) => p.onRename(i, e.target.value)}
-              />
-              {p.teams.length > 2 && (
-                <div className="btn-quitar" onClick={() => p.onRemove(i)}>×</div>
-              )}
+            <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div className="dot dot-18" style={{ background: eq.color }} />
+                <input
+                  className="team-input"
+                  value={eq.name}
+                  placeholder="Nombre del equipo"
+                  onChange={(e) => p.onRename(i, e.target.value)}
+                />
+                {p.teams.length > 2 && (
+                  <div className="btn-quitar" onClick={() => p.onRemove(i)}>×</div>
+                )}
+              </div>
+              <div className="color-picker">
+                {p.coloresPaleta.map((c) => {
+                  const usadoPorOtro = p.teams.some((t, j) => j !== i && t.color === c);
+                  const activo = eq.color === c;
+                  return (
+                    <div
+                      key={c}
+                      className={`color-swatch${activo ? ' activo' : ''}${usadoPorOtro ? ' usado' : ''}`}
+                      style={{ background: c }}
+                      onClick={usadoPorOtro ? undefined : () => p.onColor(i, c)}
+                    />
+                  );
+                })}
+              </div>
             </div>
           ))}
           {p.teams.length < 4 && (

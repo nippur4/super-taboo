@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { COLORES_EQUIPO, COLORES_EQUIPO_SUAVE, MODOS, RONDAS, INSTRUCCIONES, SEGUNDOS_AVISO, Mode } from './constants';
-import { GameState, ESTADO_INICIAL, armarPartida, mezclar, palabrasFiltradas, cargarConfig, guardarConfig } from './game';
+import { COLORES_EQUIPO, suaveDe, textoDe, MODOS, RONDAS, INSTRUCCIONES, SEGUNDOS_AVISO, Mode } from './constants';
+import { GameState, ESTADO_INICIAL, armarPartida, mezclar, palabrasFiltradas, cargarConfig, guardarConfig, colorLibre } from './game';
 import { desbloquearAudio, vibrar, sonidoAcierto, sonidoBuzzer, sonidoRonda, sonidoTic, sonidoFalta, sonidoVictoria } from './audio';
 import { initAds, mostrarBanner, ocultarBanner, prepararInterstitial, mostrarInterstitial } from './ads';
 import Home from './screens/Home';
@@ -230,7 +230,7 @@ export default function App() {
   const tabla = g.teams.map((t, i) => ({
     name: nombreEquipo(i),
     score: t.score,
-    color: COLORES_EQUIPO[i],
+    color: t.color,
     bg: i === g.teamIdx && g.screen === 'preturn' ? '#FFFFFF' : 'rgba(255,255,255,0.55)',
   }));
 
@@ -254,9 +254,11 @@ export default function App() {
           titulo={modo.nombre}
           sub={modo.infinito ? 'PALABRAS SIN FIN · 1 RONDA' : `${modo.rondas.length} RONDAS · MISMAS PALABRAS`}
           teams={g.teams}
+          coloresPaleta={COLORES_EQUIPO}
           onRename={(i, name) => setG({ ...g, teams: g.teams.map((t, j) => (j === i ? { ...t, name } : t)) })}
+          onColor={(i, color) => setG({ ...g, teams: g.teams.map((t, j) => (j === i ? { ...t, color } : t)) })}
           onRemove={(i) => { if (nEq > 2) setG({ ...g, teams: g.teams.filter((_, j) => j !== i) }); }}
-          onAgregar={() => { if (nEq < 4) setG({ ...g, teams: g.teams.concat({ name: `Equipo ${nEq + 1}`, score: 0 }) }); }}
+          onAgregar={() => { if (nEq < 4) setG({ ...g, teams: g.teams.concat({ name: `Equipo ${nEq + 1}`, score: 0, color: colorLibre(g.teams) }) }); }}
           tiempo={g.tiempo}
           onTiempo={(tiempo) => setG({ ...g, tiempo })}
           pasar={g.pasar}
@@ -295,7 +297,7 @@ export default function App() {
           ronda={ronda}
           rondaBadge={rondaBadge}
           equipoNombre={nombreEquipo(g.teamIdx)}
-          equipoColor={COLORES_EQUIPO[g.teamIdx]}
+          equipoColor={g.teams[g.teamIdx].color}
           verRestantes={!modo.infinito}
           restantesTxt={restantesTxt}
           tabla={tabla}
@@ -310,9 +312,10 @@ export default function App() {
       return (
         <Turn
           ronda={ronda}
-          fondo={COLORES_EQUIPO_SUAVE[g.teamIdx]}
+          fondo={suaveDe(g.teams[g.teamIdx].color)}
           equipoNombre={nombreEquipo(g.teamIdx)}
-          equipoColor={COLORES_EQUIPO[g.teamIdx]}
+          equipoColor={g.teams[g.teamIdx].color}
+          equipoTexto={textoDe(g.teams[g.teamIdx].color)}
           turnScore={g.turnScore}
           timeLeft={g.timeLeft}
           timerPct={`${g.tiempo ? (g.timeLeft / g.tiempo) * 100 : 0}%`}
@@ -365,7 +368,7 @@ export default function App() {
       const max = Math.max(...g.teams.map((t) => t.score));
       const empate = g.teams.filter((t) => t.score === max).length > 1;
       const ordenados = g.teams
-        .map((t, i) => ({ ...t, name: nombreEquipo(i), color: COLORES_EQUIPO[i] }))
+        .map((t, i) => ({ ...t, name: nombreEquipo(i) }))
         .sort((a, b) => b.score - a.score);
       const ranking = ordenados.map((t, i) => ({
         pos: `${i + 1}°`,

@@ -5,6 +5,7 @@ interface Props {
   fondo: string;
   equipoNombre: string;
   equipoColor: string;
+  equipoTexto: string;
   turnScore: number;
   timeLeft: number;
   timerPct: string;
@@ -47,7 +48,7 @@ export default function Turn(p: Props) {
       </div>
 
       <div className="word-card">
-        <div className="word-card-banda" style={{ background: p.ronda.color, color: p.ronda.texto }}>
+        <div className="word-card-banda" style={{ background: p.equipoColor, color: p.equipoTexto }}>
           <div className="word-card-ronda">{p.ronda.n}</div>
           <div className="word-card-cat">{p.categoria}</div>
         </div>

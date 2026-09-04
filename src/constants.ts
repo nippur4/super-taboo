@@ -1,6 +1,19 @@
 export const COLORES_EQUIPO = ['#FF4E45', '#3E7BFF', '#FFC93C', '#9B5DE5'];
 // Versión suave de cada color de equipo, para teñir el fondo del turno.
 export const COLORES_EQUIPO_SUAVE = ['#FFEAE4', '#E3ECFF', '#FFF3D1', '#F0E6FC'];
+// Color de texto legible sobre cada color de equipo (el amarillo pide tinta oscura).
+export const COLORES_EQUIPO_TEXTO = ['#FAF4E8', '#FAF4E8', '#201233', '#FAF4E8'];
+
+// El color de cada equipo ahora es elegible, así que derivamos su variante suave
+// y su color de texto a partir del color elegido (no del índice del equipo).
+export function suaveDe(color: string): string {
+  const i = COLORES_EQUIPO.indexOf(color);
+  return COLORES_EQUIPO_SUAVE[i >= 0 ? i : 0];
+}
+export function textoDe(color: string): string {
+  const i = COLORES_EQUIPO.indexOf(color);
+  return COLORES_EQUIPO_TEXTO[i >= 0 ? i : 0];
+}
 
 export type RondaKey = 'taboo' | 'palabra' | 'mimica' | 'sonidos';
 export type Mode = 'clasico' | 'super' | 'extremo';
