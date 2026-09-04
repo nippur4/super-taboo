@@ -19,6 +19,10 @@ export default function App() {
   const gRef = useRef(g);
   gRef.current = g;
   const intRef = useRef<number | null>(null);
+  // Pila de "deshacer": snapshots del estado ANTES de cada acierto/falta/pasar
+  // del turno actual, para revertir un toque equivocado y seguir donde estabas.
+  const undoRef = useRef<GameState[]>([]);
+  const [undoLen, setUndoLen] = useState(0);
 
   // ── timer ──
   const pararTimer = () => {
@@ -49,6 +53,35 @@ export default function App() {
   };
 
   useEffect(() => pararTimer, []);
+
+  // ── deshacer ──
+  const pushUndo = (s: GameState) => {
+    undoRef.current = [...undoRef.current, s];
+    setUndoLen(undoRef.current.length);
+  };
+  const limpiarUndo = () => {
+    undoRef.current = [];
+    setUndoLen(0);
+  };
+  const deshacer = () => {
+    const st = undoRef.current;
+    if (!st.length) return;
+    const snap = st[st.length - 1];
+    undoRef.current = st.slice(0, -1);
+    setUndoLen(undoRef.current.length);
+    vibrar(20);
+    const cur = gRef.current;
+    const restaurado: GameState = { ...snap, screen: 'turn', running: true, falta: false };
+    if (cur.screen === 'turn' && cur.running) {
+      // Deshacer en pleno turno (acierto/pasar): el reloj sigue, no regalamos segundos.
+      restaurado.timeLeft = cur.timeLeft;
+      setG(restaurado);
+    } else {
+      // Deshacer una falta (o un acierto que cerró la ronda): retomamos el turno.
+      setG(restaurado);
+      arrancarTimer();
+    }
+  };
 
   // ── ads ──
   useEffect(() => {
@@ -91,6 +124,7 @@ export default function App() {
 
   const empezarTurno = () => {
     desbloquearAudio();
+    limpiarUndo();
     setG({ ...gRef.current, timeLeft: g.tiempo, turnScore: 0, running: true, falta: false, screen: 'turn' });
     arrancarTimer();
   };
@@ -98,6 +132,7 @@ export default function App() {
   const falta = () => {
     const s = gRef.current;
     if (!s.running) return;
+    pushUndo(s);
     pararTimer();
     sonidoFalta();
     vibrar([200, 80, 200]);
@@ -107,6 +142,7 @@ export default function App() {
   const acierto = () => {
     const s = gRef.current;
     if (!s.running) return;
+    pushUndo(s);
     sonidoAcierto();
     vibrar(35);
     const pool = s.pool.slice(1);
@@ -129,6 +165,7 @@ export default function App() {
   const pasar = () => {
     const s = gRef.current;
     if (!s.running || s.pool.length < 2) return;
+    pushUndo(s);
     setG({ ...s, pool: s.pool.slice(1).concat(s.pool[0]) });
   };
 
@@ -153,6 +190,7 @@ export default function App() {
 
   const salirMenu = () => {
     pararTimer();
+    limpiarUndo();
     setG({ ...g, screen: 'home' });
   };
 
@@ -283,6 +321,8 @@ export default function App() {
           onPasar={pasar}
           onAcierto={acierto}
           onFalta={falta}
+          puedeDeshacer={undoLen > 0}
+          onDeshacer={deshacer}
         />
       );
 
@@ -294,6 +334,8 @@ export default function App() {
           turnScore={g.turnScore}
           siguienteNombre={nombreEquipo((g.teamIdx + 1) % nEq)}
           onSiguienteTurno={siguienteTurno}
+          puedeDeshacer={g.falta && undoLen > 0}
+          onDeshacer={deshacer}
         />
       );
 

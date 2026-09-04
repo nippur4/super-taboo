@@ -1,21 +1,29 @@
 // Monetización con AdMob (via @capacitor-community/admob).
 //
 // ── PARA COBRAR DE VERDAD ──
-// 1. Crear cuenta en https://admob.google.com y registrar la app.
-// 2. Crear un bloque "Banner" y uno "Interstitial" y pegar sus IDs abajo.
-// 3. Reemplazar el APPLICATION_ID en android/app/src/main/AndroidManifest.xml.
-// 4. Poner TESTING en false.
-// Mientras TESTING sea true se usan los anuncios de prueba de Google
-// (obligatorio durante el desarrollo: clickear anuncios reales propios
-// puede hacer que Google suspenda la cuenta).
+// Cuenta AdMob: pub-7044201893544579. App ID y bloques ya creados (abajo).
+// El único paso que falta para cobrar es poner TESTING = false, y eso se hace
+// SOLO en el build final de producción (una vez publicada la app en Play).
+// Mientras TESTING sea true se usan los anuncios de PRUEBA de Google: es
+// obligatorio durante el desarrollo/testing porque clickear anuncios reales
+// propios puede hacer que Google suspenda la cuenta.
 import { AdMob, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
 import { Capacitor } from '@capacitor/core';
 
 const TESTING = true;
 
-// IDs de prueba oficiales de Google — reemplazar por los propios.
-const BANNER_AD_ID = 'ca-app-pub-3940256099942544/6300978111';
-const INTERSTITIAL_AD_ID = 'ca-app-pub-3940256099942544/1033173712';
+// IDs reales de la cuenta (se usan solo con TESTING = false).
+const REAL_BANNER_AD_ID = 'ca-app-pub-7044201893544579/6166646575';
+const REAL_INTERSTITIAL_AD_ID = 'ca-app-pub-7044201893544579/3899575886';
+// App ID real (referencia; el que cuenta va en el AndroidManifest):
+//   ca-app-pub-7044201893544579~9371394419
+
+// IDs de prueba oficiales de Google (se usan con TESTING = true).
+const TEST_BANNER_AD_ID = 'ca-app-pub-3940256099942544/6300978111';
+const TEST_INTERSTITIAL_AD_ID = 'ca-app-pub-3940256099942544/1033173712';
+
+const BANNER_AD_ID = TESTING ? TEST_BANNER_AD_ID : REAL_BANNER_AD_ID;
+const INTERSTITIAL_AD_ID = TESTING ? TEST_INTERSTITIAL_AD_ID : REAL_INTERSTITIAL_AD_ID;
 
 // No mostrar más de un interstitial cada N ms para no espantar jugadores
 // (y cumplir las políticas de AdMob).

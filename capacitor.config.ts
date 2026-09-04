@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.nico.decilosindecirlo',
+  appId: 'decilo.sin.decirlo',
   appName: 'Decilo sin decirlo',
   webDir: 'dist',
 };

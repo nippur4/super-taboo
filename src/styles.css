@@ -89,6 +89,49 @@ input::placeholder { color: var(--placeholder); }
 
 .link-menu { text-align: center; font-size: 13px; font-weight: 800; color: var(--atenuado); cursor: pointer; text-decoration: underline; }
 
+/* Botón "Cómo se juega" en la home: visible, con la estética del juego */
+.home-reglas {
+  background: #FFFFFF;
+  border: 3px solid var(--tinta);
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 var(--tinta);
+  padding: 14px;
+  text-align: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--tinta);
+}
+
+/* Deshacer dentro del turno: discreto, no compite con acierto/falta */
+.btn-deshacer {
+  align-self: center;
+  background: transparent;
+  border: 2px solid var(--atenuado);
+  border-radius: 10px;
+  padding: 7px 16px;
+  font-family: 'Anton', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  color: var(--atenuado);
+  cursor: pointer;
+}
+
+/* Deshacer en la pantalla de falta: botón secundario sobre fondo coral */
+.btn-deshacer-timeup {
+  margin-top: 12px;
+  background: var(--crema);
+  border: 3px solid var(--tinta);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--tinta);
+  padding: 12px 16px;
+  text-align: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--tinta);
+}
+
 /* ══════════ Inicio ══════════ */
 .home {
   overflow-y: auto;

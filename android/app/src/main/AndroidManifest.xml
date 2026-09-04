@@ -9,11 +9,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- ID de aplicación de AdMob. Este es el de PRUEBA de Google:
-             reemplazar por el ID real (ca-app-pub-XXXX~YYYY) antes de publicar. -->
+        <!-- ID de aplicación de AdMob (cuenta pub-7044201893544579).
+             Es el ID real: los anuncios de prueba se controlan con TESTING en src/ads.ts. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-7044201893544579~9371394419" />
 
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation"

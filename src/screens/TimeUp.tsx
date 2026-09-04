@@ -4,6 +4,8 @@ interface Props {
   turnScore: number;
   siguienteNombre: string;
   onSiguienteTurno: () => void;
+  puedeDeshacer?: boolean;
+  onDeshacer?: () => void;
 }
 
 export default function TimeUp(p: Props) {
@@ -27,6 +29,11 @@ export default function TimeUp(p: Props) {
       >
         LISTO, SEGUIMOS
       </div>
+      {p.puedeDeshacer && (
+        <div className="btn-deshacer-timeup press press-2" onClick={p.onDeshacer}>
+          ↶ ME EQUIVOQUÉ, SEGUIR JUGANDO
+        </div>
+      )}
     </div>
   );
 }

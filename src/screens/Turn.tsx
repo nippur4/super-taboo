@@ -20,6 +20,8 @@ interface Props {
   onPasar: () => void;
   onAcierto: () => void;
   onFalta: () => void;
+  puedeDeshacer: boolean;
+  onDeshacer: () => void;
 }
 
 export default function Turn(p: Props) {
@@ -71,6 +73,9 @@ export default function Turn(p: Props) {
           <div className="btn-acierto press press-3" onClick={p.onAcierto}>¡ACIERTO! +1</div>
         </div>
         <div className="btn-falta press press-3" onClick={p.onFalta}>FALTA — TERMINAR TURNO</div>
+        {p.puedeDeshacer && (
+          <div className="btn-deshacer press press-2" onClick={p.onDeshacer}>↶ DESHACER</div>
+        )}
       </div>
     </div>
   );

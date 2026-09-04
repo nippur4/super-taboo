@@ -63,7 +63,9 @@ export default function Home({ onElegir, onVerReglas }: Props) {
         </div>
       </div>
 
-      <div className="link-menu" style={{ marginTop: 24 }} onClick={onVerReglas}>Ver reglas</div>
+      <div className="home-reglas press press-3" style={{ marginTop: 20 }} onClick={onVerReglas}>
+        📖 CÓMO SE JUEGA
+      </div>
     </div>
   );
 }
