@@ -45,3 +45,11 @@ export function sonidoBuzzer() { beep(520, 0.55, 'sawtooth', 0.4, 0, 180); beep(
 export function sonidoRonda() { beep(523, 0.12, 'triangle', 0.3); beep(659, 0.12, 'triangle', 0.3, 0.11); beep(784, 0.22, 'triangle', 0.32, 0.22); }
 export function sonidoTic() { beep(1150, 0.05, 'square', 0.2); }
 export function sonidoFalta() { beep(220, 0.18, 'square', 0.32); beep(160, 0.3, 'square', 0.32, 0.14); }
+// Fanfarria de victoria al terminar la partida: arpegio ascendente + remate brillante.
+export function sonidoVictoria() {
+  beep(523, 0.14, 'triangle', 0.32, 0);      // Do
+  beep(659, 0.14, 'triangle', 0.32, 0.13);   // Mi
+  beep(784, 0.14, 'triangle', 0.32, 0.26);   // Sol
+  beep(1046, 0.42, 'triangle', 0.40, 0.40);  // Do agudo (remate)
+  beep(1568, 0.42, 'square', 0.12, 0.40);    // brillo suave encima
+}

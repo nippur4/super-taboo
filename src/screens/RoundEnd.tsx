@@ -1,13 +1,18 @@
+import { useState } from 'react';
+import { RondaDef } from '../constants';
 import { FilaTabla } from './PreTurn';
 
 interface Props {
   rondaBadge: string;
   tabla: FilaTabla[];
   continuarTxt: string;
+  reglaSiguiente: RondaDef | null;
   onContinuar: () => void;
 }
 
 export default function RoundEnd(p: Props) {
+  const [verReglas, setVerReglas] = useState(false);
+  const sig = p.reglaSiguiente;
   return (
     <div className="screen roundend">
       <div className="ronda-badge" style={{ background: '#00C489', color: '#FAF4E8', fontSize: 14 }}>{p.rondaBadge}</div>
@@ -29,6 +34,29 @@ export default function RoundEnd(p: Props) {
       >
         {p.continuarTxt}
       </div>
+      {sig && (
+        <div className="roundend-verreglas press press-2" onClick={() => setVerReglas(true)}>
+          📖 VER REGLAS DE LA SIGUIENTE RONDA
+        </div>
+      )}
+
+      {verReglas && sig && (
+        <div className="reglas-overlay" onClick={() => setVerReglas(false)}>
+          <div className="reglas-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="ronda-badge" style={{ background: sig.color, color: sig.texto, fontSize: 14, alignSelf: 'center' }}>
+              {sig.n}
+            </div>
+            <p className="reglas-modal-texto">{sig.regla}</p>
+            <div
+              className="cta press press-3"
+              onClick={() => setVerReglas(false)}
+              style={{ width: '100%', background: '#201233', color: '#FAF4E8', fontSize: 18, boxShadow: `4px 4px 0 ${sig.color}` }}
+            >
+              ¡ENTENDIDO!
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

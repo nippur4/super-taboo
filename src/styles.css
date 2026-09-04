@@ -116,6 +116,8 @@ input::placeholder { color: var(--placeholder); }
   color: var(--atenuado);
   cursor: pointer;
 }
+/* Deshacer bloqueado (nada que revertir): visible pero apagado, sin mover el layout */
+.btn-deshacer-off { opacity: 0.35; pointer-events: none; }
 
 /* Deshacer en la pantalla de falta: botón secundario sobre fondo coral */
 .btn-deshacer-timeup {
@@ -571,6 +573,52 @@ input::placeholder { color: var(--placeholder); }
 }
 .roundend-titulo { font-family: 'Anton', sans-serif; font-size: 42px; text-align: center; line-height: 1.1; margin: 14px 0 6px; text-wrap: balance; }
 .roundend-sub { font-size: 14px; font-weight: 700; color: var(--texto-3); text-align: center; margin-bottom: 22px; }
+/* Botón "ver reglas de la siguiente ronda" */
+.roundend-verreglas {
+  margin-top: 12px;
+  text-align: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--tinta);
+  background: #FFFFFF;
+  border: 3px solid var(--tinta);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--tinta);
+  padding: 11px 14px;
+  width: 100%;
+}
+/* Overlay con las reglas de la ronda que viene */
+.reglas-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(32, 18, 51, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px;
+  z-index: 50;
+}
+.reglas-modal {
+  background: var(--crema);
+  border: 3px solid var(--tinta);
+  border-radius: 20px;
+  box-shadow: 6px 6px 0 var(--tinta);
+  padding: 22px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.reglas-modal-texto {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--tinta);
+  text-align: center;
+  text-wrap: balance;
+}
 
 /* ══════════ Resultados ══════════ */
 .gameover { overflow: hidden; background: var(--amarillo); }

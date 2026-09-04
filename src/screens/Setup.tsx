@@ -59,35 +59,6 @@ export default function Setup(p: Props) {
           )}
         </div>
 
-        <div className="section-label">TIEMPO POR TURNO</div>
-        <div style={{ display: 'flex', gap: 7 }}>
-          {[30, 45, 60, 75, 90].map((v) => (
-            <div
-              key={v}
-              className="chip-tiempo"
-              onClick={() => p.onTiempo(v)}
-              style={{
-                background: p.tiempo === v ? '#201233' : '#FFFFFF',
-                color: p.tiempo === v ? '#FAF4E8' : '#201233',
-                boxShadow: p.tiempo === v ? '3px 3px 0 #FF4E45' : 'none',
-              }}
-            >
-              {v}s
-            </div>
-          ))}
-        </div>
-
-        <div className="section-label">REGLAS</div>
-        <div className="card-blanca" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 15 }}>Se puede pasar</div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#8A7E6C' }}>Saltear una palabra no resta puntos</div>
-          </div>
-          <div className="toggle" onClick={p.onTogglePasar} style={{ background: p.pasar ? '#00C489' : '#D8D0C4' }}>
-            <div className="knob" style={{ left: p.pasar ? 29 : 2 }} />
-          </div>
-        </div>
-
         {p.esModoSuper && (
           <>
             <div className="section-label">EL MAZO</div>
@@ -121,6 +92,35 @@ export default function Setup(p: Props) {
             </div>
           </>
         )}
+
+        <div className="section-label">TIEMPO POR TURNO</div>
+        <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+          {[20, 30, 45, 60, 75, 90].map((v) => (
+            <div
+              key={v}
+              className="chip-tiempo"
+              onClick={() => p.onTiempo(v)}
+              style={{
+                background: p.tiempo === v ? '#201233' : '#FFFFFF',
+                color: p.tiempo === v ? '#FAF4E8' : '#201233',
+                boxShadow: p.tiempo === v ? '3px 3px 0 #FF4E45' : 'none',
+              }}
+            >
+              {v}s
+            </div>
+          ))}
+        </div>
+
+        <div className="section-label">REGLAS</div>
+        <div className="card-blanca" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 15 }}>Se puede pasar</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#8A7E6C' }}>Saltear una palabra no resta puntos</div>
+          </div>
+          <div className="toggle" onClick={p.onTogglePasar} style={{ background: p.pasar ? '#00C489' : '#D8D0C4' }}>
+            <div className="knob" style={{ left: p.pasar ? 29 : 2 }} />
+          </div>
+        </div>
 
         <div className="section-label">CATEGORÍAS · {p.palabrasPosibles} PALABRAS POSIBLES</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>

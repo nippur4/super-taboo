@@ -33,7 +33,7 @@ export const ESTADO_INICIAL: GameState = {
   screen: 'home',
   mode: 'super',
   teams: [{ name: 'Equipo 1', score: 0 }, { name: 'Equipo 2', score: 0 }],
-  tiempo: 45,
+  tiempo: 30,
   pasar: true,
   jugadores: 6,
   porJugador: 3,
@@ -47,6 +47,47 @@ export const ESTADO_INICIAL: GameState = {
   running: false,
   falta: false,
 };
+
+// ── Persistencia de la última configuración usada ──
+// El teléfono recuerda equipos, tiempo, reglas, mazo y categorías del último
+// juego para no tener que reconfigurar todo cada vez.
+const CONFIG_KEY = 'decilo-config-v1';
+
+export function guardarConfig(s: GameState) {
+  try {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify({
+      mode: s.mode,
+      teams: s.teams.map((t) => t.name),
+      tiempo: s.tiempo,
+      pasar: s.pasar,
+      jugadores: s.jugadores,
+      porJugador: s.porJugador,
+      catsSel: s.catsSel,
+    }));
+  } catch { /* sin storage */ }
+}
+
+export function cargarConfig(): Partial<GameState> {
+  try {
+    const raw = localStorage.getItem(CONFIG_KEY);
+    if (!raw) return {};
+    const c = JSON.parse(raw);
+    const out: Partial<GameState> = {};
+    if (c.mode && MODOS[c.mode as Mode]) out.mode = c.mode;
+    if (Array.isArray(c.teams) && c.teams.length >= 2) {
+      out.teams = c.teams.slice(0, 4).map((name: unknown) => ({ name: String(name), score: 0 }));
+    }
+    if (typeof c.tiempo === 'number') out.tiempo = c.tiempo;
+    if (typeof c.pasar === 'boolean') out.pasar = c.pasar;
+    if (typeof c.jugadores === 'number') out.jugadores = Math.min(16, Math.max(4, c.jugadores));
+    if ([3, 5, 7].includes(c.porJugador)) out.porJugador = c.porJugador;
+    if (Array.isArray(c.catsSel)) {
+      const cats = c.catsSel.filter((x: unknown) => CATEGORIAS.includes(x as string));
+      if (cats.length) out.catsSel = cats;
+    }
+    return out;
+  } catch { return {}; }
+}
 
 export function mezclar<T>(arr: T[]): T[] {
   const a = arr.slice();

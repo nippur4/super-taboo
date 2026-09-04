@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { COLORES_EQUIPO, MODOS, RONDAS, INSTRUCCIONES, SEGUNDOS_AVISO, Mode } from './constants';
-import { GameState, ESTADO_INICIAL, armarPartida, mezclar, palabrasFiltradas } from './game';
-import { desbloquearAudio, vibrar, sonidoAcierto, sonidoBuzzer, sonidoRonda, sonidoTic, sonidoFalta } from './audio';
+import { COLORES_EQUIPO, COLORES_EQUIPO_SUAVE, MODOS, RONDAS, INSTRUCCIONES, SEGUNDOS_AVISO, Mode } from './constants';
+import { GameState, ESTADO_INICIAL, armarPartida, mezclar, palabrasFiltradas, cargarConfig, guardarConfig } from './game';
+import { desbloquearAudio, vibrar, sonidoAcierto, sonidoBuzzer, sonidoRonda, sonidoTic, sonidoFalta, sonidoVictoria } from './audio';
 import { initAds, mostrarBanner, ocultarBanner, prepararInterstitial, mostrarInterstitial } from './ads';
 import Home from './screens/Home';
 import Setup from './screens/Setup';
@@ -14,7 +14,7 @@ import GameOver from './screens/GameOver';
 import Reglas from './screens/Reglas';
 
 export default function App() {
-  const [g, setG] = useState<GameState>(ESTADO_INICIAL);
+  const [g, setG] = useState<GameState>(() => ({ ...ESTADO_INICIAL, ...cargarConfig() }));
   const [verReglas, setVerReglas] = useState(false);
   const gRef = useRef(g);
   gRef.current = g;
@@ -83,6 +83,11 @@ export default function App() {
     }
   };
 
+  // ── recordar la última configuración usada ──
+  useEffect(() => {
+    guardarConfig(g);
+  }, [g.mode, g.teams, g.tiempo, g.pasar, g.jugadores, g.porJugador, g.catsSel]);
+
   // ── ads ──
   useEffect(() => {
     initAds();
@@ -94,6 +99,8 @@ export default function App() {
     else ocultarBanner();
     // El interstitial se precarga al llegar a resultados y se muestra al salir.
     if (g.screen === 'gameover') prepararInterstitial();
+    // Fanfarria de victoria al llegar a los resultados finales.
+    if (g.screen === 'gameover') { sonidoVictoria(); vibrar([80, 60, 80, 60, 200]); }
   }, [g.screen]);
 
   // ── pantalla siempre encendida durante el turno ──
@@ -256,7 +263,7 @@ export default function App() {
           onTogglePasar={() => setG({ ...g, pasar: !g.pasar })}
           esModoSuper={!modo.infinito}
           jugadores={g.jugadores}
-          onJugadores={(d) => setG({ ...g, jugadores: Math.min(16, Math.max(2, g.jugadores + d)) })}
+          onJugadores={(d) => setG({ ...g, jugadores: Math.min(16, Math.max(4, g.jugadores + d)) })}
           porJugador={g.porJugador}
           onPorJugador={(porJugador) => setG({ ...g, porJugador })}
           totalPalabrasTxt={totalPalabrasTxt}
@@ -303,6 +310,7 @@ export default function App() {
       return (
         <Turn
           ronda={ronda}
+          fondo={COLORES_EQUIPO_SUAVE[g.teamIdx]}
           equipoNombre={nombreEquipo(g.teamIdx)}
           equipoColor={COLORES_EQUIPO[g.teamIdx]}
           turnScore={g.turnScore}
@@ -341,11 +349,13 @@ export default function App() {
 
     case 'roundend': {
       const haySiguiente = g.roundIdx + 1 < modo.rondas.length;
+      const reglaSiguiente = haySiguiente ? RONDAS[modo.rondas[g.roundIdx + 1]] : null;
       return (
         <RoundEnd
           rondaBadge={rondaBadge}
           tabla={tabla}
-          continuarTxt={haySiguiente ? `SIGUIENTE RONDA: ${RONDAS[modo.rondas[g.roundIdx + 1]].n}` : 'VER RESULTADOS'}
+          continuarTxt={haySiguiente ? `SIGUIENTE RONDA: ${reglaSiguiente!.n}` : 'VER RESULTADOS'}
+          reglaSiguiente={reglaSiguiente}
           onContinuar={continuarRonda}
         />
       );

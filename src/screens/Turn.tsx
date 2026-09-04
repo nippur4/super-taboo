@@ -2,6 +2,7 @@ import { RondaDef } from '../constants';
 
 interface Props {
   ronda: RondaDef;
+  fondo: string;
   equipoNombre: string;
   equipoColor: string;
   turnScore: number;
@@ -27,7 +28,7 @@ interface Props {
 export default function Turn(p: Props) {
   const timerColor = p.urgente ? '#FF4E45' : '#201233';
   return (
-    <div className="screen turn" style={{ background: p.ronda.suave }}>
+    <div className="screen turn" style={{ background: p.fondo }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
           <div className="dot dot-14" style={{ background: p.equipoColor }} />
@@ -73,9 +74,12 @@ export default function Turn(p: Props) {
           <div className="btn-acierto press press-3" onClick={p.onAcierto}>¡ACIERTO! +1</div>
         </div>
         <div className="btn-falta press press-3" onClick={p.onFalta}>FALTA — TERMINAR TURNO</div>
-        {p.puedeDeshacer && (
-          <div className="btn-deshacer press press-2" onClick={p.onDeshacer}>↶ DESHACER</div>
-        )}
+        <div
+          className={`btn-deshacer press press-2${p.puedeDeshacer ? '' : ' btn-deshacer-off'}`}
+          onClick={p.puedeDeshacer ? p.onDeshacer : undefined}
+        >
+          ↶ DESHACER
+        </div>
       </div>
     </div>
   );
