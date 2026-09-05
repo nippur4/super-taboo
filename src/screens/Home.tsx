@@ -1,4 +1,5 @@
 import { Mode } from '../constants';
+import { PALABRAS } from '../palabras';
 
 const FICHAS = [
   { letra: 'D', bg: '#FF4E45', color: '#FAF4E8', rot: -5 },
@@ -31,6 +32,7 @@ export default function Home({ onElegir, onVerReglas }: Props) {
       <p className="home-tagline">Palabras prohibidas, mímica y caos. Pasá el teléfono y a jugar.</p>
 
       <div className="home-label">ELEGÍ CÓMO JUGAR</div>
+      <div className="home-total">{PALABRAS.length} palabras disponibles</div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div className="mode-card" onClick={() => onElegir('clasico')}>
