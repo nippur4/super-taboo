@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { COLORES_EQUIPO, suaveDe, textoDe, MODOS, RONDAS, INSTRUCCIONES, SEGUNDOS_AVISO, Mode } from './constants';
-import { GameState, ESTADO_INICIAL, armarPartida, mezclar, palabrasFiltradas, cargarConfig, guardarConfig, colorLibre } from './game';
+import { GameState, ESTADO_INICIAL, armarPartida, mezclar, palabrasFiltradas, cargarConfig, guardarConfig, colorLibre, esSinFin, turnosParejos, elegirColor } from './game';
 import { desbloquearAudio, vibrar, sonidoAcierto, sonidoBuzzer, sonidoRonda, sonidoTic, sonidoFalta, sonidoVictoria } from './audio';
 import { initAds, mostrarBanner, ocultarBanner, prepararInterstitial, mostrarInterstitial } from './ads';
 import Home from './screens/Home';
@@ -84,9 +84,11 @@ export default function App() {
   };
 
   // ── recordar la última configuración usada ──
+  // Solo se guarda en home/setup (donde la config cambia): así evitamos escribir
+  // en localStorage en cada punto del juego, cuando g.teams cambia por el score.
   useEffect(() => {
-    guardarConfig(g);
-  }, [g.mode, g.teams, g.tiempo, g.pasar, g.jugadores, g.porJugador, g.catsSel]);
+    if (g.screen === 'home' || g.screen === 'setup') guardarConfig(g);
+  }, [g.mode, g.teams, g.tiempo, g.pasar, g.jugadores, g.porJugador, g.catsSel, g.screen]);
 
   // ── ads ──
   useEffect(() => {
@@ -126,7 +128,7 @@ export default function App() {
     desbloquearAudio();
     // el equipo que empieza se sortea; la ruleta de la pantalla de sorteo cae ahí
     const teamIdx = Math.floor(Math.random() * g.teams.length);
-    setG({ ...g, ...base, teamIdx, screen: 'sorteo' });
+    setG({ ...g, ...base, teamIdx, screen: 'sorteo', turnosPorEquipo: g.teams.map(() => 0), terminando: false });
   };
 
   const empezarTurno = () => {
@@ -156,7 +158,7 @@ export default function App() {
     const teams = s.teams.map((t, i) => (i === s.teamIdx ? { ...t, score: t.score + 1 } : t));
     const turnScore = s.turnScore + 1;
     if (pool.length === 0) {
-      if (MODOS[s.mode].infinito) {
+      if (esSinFin(s)) {
         setG({ ...s, teams, turnScore, pool: mezclar(s.deck.map((_, i) => i)) });
       } else {
         pararTimer();
@@ -177,7 +179,25 @@ export default function App() {
   };
 
   const siguienteTurno = () => {
-    setG({ ...g, teamIdx: (g.teamIdx + 1) % g.teams.length, screen: 'preturn' });
+    const s = gRef.current;
+    // el equipo que jugó recién suma un turno
+    const turnosPorEquipo = s.turnosPorEquipo.map((n, i) => (i === s.teamIdx ? n + 1 : n));
+    // si se pidió terminar, cerramos apenas todos los equipos jueguen lo mismo
+    if (s.terminando && turnosParejos(turnosPorEquipo)) {
+      setG({ ...s, turnosPorEquipo, screen: 'gameover' });
+    } else {
+      setG({ ...s, turnosPorEquipo, teamIdx: (s.teamIdx + 1) % s.teams.length, screen: 'preturn' });
+    }
+  };
+
+  // Terminar partida (modo sin fin): si algún equipo jugó menos, se juega hasta emparejar.
+  const pedirTerminar = () => {
+    const s = gRef.current;
+    if (turnosParejos(s.turnosPorEquipo)) {
+      setG({ ...s, screen: 'gameover' }); // ya está parejo: a resultados
+    } else {
+      setG({ ...s, terminando: true }); // que jueguen los que faltan y después cierra
+    }
   };
 
   const continuarRonda = () => {
@@ -205,7 +225,7 @@ export default function App() {
     mostrarInterstitial();
     const base = armarPartida(g);
     const teamIdx = Math.floor(Math.random() * g.teams.length);
-    setG({ ...g, ...base, teamIdx, screen: 'sorteo', turnScore: 0 });
+    setG({ ...g, ...base, teamIdx, screen: 'sorteo', turnScore: 0, turnosPorEquipo: g.teams.map(() => 0), terminando: false });
   };
 
   const salirMenuDesdeResultados = () => {
@@ -215,6 +235,7 @@ export default function App() {
 
   // ── derivados ──
   const modo = MODOS[g.mode];
+  const esInfinito = esSinFin(g); // Clásico con palabras sin fin (mazo que se recicla)
   const rondaKey = modo.rondas[Math.min(g.roundIdx, modo.rondas.length - 1)];
   const ronda = RONDAS[rondaKey];
   const carta = g.deck.length && g.pool.length ? g.deck[g.pool[0]] : null;
@@ -222,7 +243,7 @@ export default function App() {
   const nEq = g.teams.length;
 
   const nombreEquipo = (i: number) => g.teams[i]?.name || `Equipo ${i + 1}`;
-  const rondaBadge = modo.infinito
+  const rondaBadge = modo.rondas.length === 1
     ? 'RONDA ÚNICA'
     : `RONDA ${Math.min(g.roundIdx + 1, modo.rondas.length)} DE ${modo.rondas.length}`;
   const restantesTxt = g.pool.length === 1 ? 'Queda 1 palabra' : `Quedan ${g.pool.length} palabras`;
@@ -249,21 +270,27 @@ export default function App() {
       const totalPalabrasTxt = pedidas > disponibles
         ? `Mazo: ${totalMazo} palabras (máx. con estas categorías)`
         : `Mazo: ${totalMazo} palabras para adivinar`;
+      const sub = modo.infinito
+        ? (g.clasicoSinFin ? 'PALABRAS SIN FIN · 1 RONDA' : 'MAZO FIJO · 1 RONDA')
+        : `${modo.rondas.length} RONDAS · MISMAS PALABRAS`;
       return (
         <Setup
           titulo={modo.nombre}
-          sub={modo.infinito ? 'PALABRAS SIN FIN · 1 RONDA' : `${modo.rondas.length} RONDAS · MISMAS PALABRAS`}
+          sub={sub}
           teams={g.teams}
           coloresPaleta={COLORES_EQUIPO}
           onRename={(i, name) => setG({ ...g, teams: g.teams.map((t, j) => (j === i ? { ...t, name } : t)) })}
-          onColor={(i, color) => setG({ ...g, teams: g.teams.map((t, j) => (j === i ? { ...t, color } : t)) })}
+          onColor={(i, color) => setG({ ...g, teams: elegirColor(g.teams, i, color) })}
           onRemove={(i) => { if (nEq > 2) setG({ ...g, teams: g.teams.filter((_, j) => j !== i) }); }}
           onAgregar={() => { if (nEq < 4) setG({ ...g, teams: g.teams.concat({ name: `Equipo ${nEq + 1}`, score: 0, color: colorLibre(g.teams) }) }); }}
           tiempo={g.tiempo}
           onTiempo={(tiempo) => setG({ ...g, tiempo })}
           pasar={g.pasar}
           onTogglePasar={() => setG({ ...g, pasar: !g.pasar })}
-          esModoSuper={!modo.infinito}
+          esClasico={modo.infinito}
+          sinFin={g.clasicoSinFin}
+          onToggleSinFin={() => setG({ ...g, clasicoSinFin: !g.clasicoSinFin })}
+          verMazo={!modo.infinito || !g.clasicoSinFin}
           jugadores={g.jugadores}
           onJugadores={(d) => setG({ ...g, jugadores: Math.min(16, Math.max(4, g.jugadores + d)) })}
           porJugador={g.porJugador}
@@ -298,12 +325,13 @@ export default function App() {
           rondaBadge={rondaBadge}
           equipoNombre={nombreEquipo(g.teamIdx)}
           equipoColor={g.teams[g.teamIdx].color}
-          verRestantes={!modo.infinito}
+          verRestantes={!esInfinito}
           restantesTxt={restantesTxt}
           tabla={tabla}
-          esClasico={modo.infinito}
+          verTerminar={esInfinito}
+          terminando={g.terminando}
+          onTerminar={pedirTerminar}
           onEmpezarTurno={empezarTurno}
-          onFinalizarPartida={() => setG({ ...g, screen: 'gameover' })}
           onSalirMenu={salirMenu}
         />
       );
@@ -326,7 +354,7 @@ export default function App() {
           verProhibidas={rondaKey === 'taboo' || rondaKey === 'palabra'}
           prohibidas={carta ? carta.x : []}
           instruccion={INSTRUCCIONES[rondaKey] || ''}
-          verRestantes={!modo.infinito}
+          verRestantes={!esInfinito}
           restantesTxt={restantesTxt}
           verPasar={g.pasar && g.pool.length > 1}
           onPasar={pasar}

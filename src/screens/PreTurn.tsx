@@ -15,9 +15,10 @@ interface Props {
   verRestantes: boolean;
   restantesTxt: string;
   tabla: FilaTabla[];
-  esClasico: boolean;
+  verTerminar: boolean;
+  terminando: boolean;
+  onTerminar: () => void;
   onEmpezarTurno: () => void;
-  onFinalizarPartida: () => void;
   onSalirMenu: () => void;
 }
 
@@ -54,8 +55,12 @@ export default function PreTurn(p: Props) {
         >
           ¡EMPEZAR TURNO!
         </div>
-        {p.esClasico && (
-          <div className="btn-terminar" onClick={p.onFinalizarPartida}>TERMINAR PARTIDA</div>
+        {p.verTerminar && (
+          p.terminando ? (
+            <div className="preturn-ultima">🏁 ÚLTIMA VUELTA · que jueguen los que faltan</div>
+          ) : (
+            <div className="btn-terminar" onClick={p.onTerminar}>TERMINAR PARTIDA</div>
+          )
         )}
         <div className="link-menu" style={{ marginTop: 12 }} onClick={p.onSalirMenu}>Salir al menú</div>
       </div>

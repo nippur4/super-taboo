@@ -14,7 +14,10 @@ interface Props {
   onTiempo: (v: number) => void;
   pasar: boolean;
   onTogglePasar: () => void;
-  esModoSuper: boolean;
+  esClasico: boolean;
+  sinFin: boolean;
+  onToggleSinFin: () => void;
+  verMazo: boolean;
   jugadores: number;
   onJugadores: (delta: number) => void;
   porJugador: number;
@@ -56,18 +59,14 @@ export default function Setup(p: Props) {
                 )}
               </div>
               <div className="color-picker">
-                {p.coloresPaleta.map((c) => {
-                  const usadoPorOtro = p.teams.some((t, j) => j !== i && t.color === c);
-                  const activo = eq.color === c;
-                  return (
-                    <div
-                      key={c}
-                      className={`color-swatch${activo ? ' activo' : ''}${usadoPorOtro ? ' usado' : ''}`}
-                      style={{ background: c }}
-                      onClick={usadoPorOtro ? undefined : () => p.onColor(i, c)}
-                    />
-                  );
-                })}
+                {p.coloresPaleta.map((c) => (
+                  <div
+                    key={c}
+                    className={`color-swatch${eq.color === c ? ' activo' : ''}`}
+                    style={{ background: c }}
+                    onClick={() => p.onColor(i, c)}
+                  />
+                ))}
               </div>
             </div>
           ))}
@@ -76,7 +75,24 @@ export default function Setup(p: Props) {
           )}
         </div>
 
-        {p.esModoSuper && (
+        {p.esClasico && (
+          <>
+            <div className="section-label">PALABRAS</div>
+            <div className="card-blanca" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: 15 }}>Palabras sin fin</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#8A7E6C' }}>
+                  {p.sinFin ? 'Se juega hasta que decidan terminar' : 'Mazo de tamaño fijo (elegí abajo)'}
+                </div>
+              </div>
+              <div className="toggle" onClick={p.onToggleSinFin} style={{ background: p.sinFin ? '#00C489' : '#D8D0C4' }}>
+                <div className="knob" style={{ left: p.sinFin ? 29 : 2 }} />
+              </div>
+            </div>
+          </>
+        )}
+
+        {p.verMazo && (
           <>
             <div className="section-label">EL MAZO</div>
             <div className="card-blanca">

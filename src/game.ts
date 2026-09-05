@@ -33,6 +33,32 @@ export interface GameState {
   running: boolean;
   // true si el turno terminó por falta (y no por tiempo)
   falta: boolean;
+  // En Clásico: true = palabras sin fin; false = mazo de tamaño fijo (jugadores × palabras).
+  clasicoSinFin: boolean;
+  // Turnos jugados por cada equipo (para terminar parejo en modo sin fin).
+  turnosPorEquipo: number[];
+  // El usuario pidió terminar: se cierra al emparejar los turnos.
+  terminando: boolean;
+}
+
+// ¿La partida usa palabras sin fin? Solo Clásico puede serlo, y solo si está activado.
+export function esSinFin(s: GameState): boolean {
+  return MODOS[s.mode].infinito && s.clasicoSinFin;
+}
+
+// ¿Todos los equipos jugaron la misma cantidad de turnos?
+export function turnosParejos(turnos: number[]): boolean {
+  return Math.max(...turnos) === Math.min(...turnos);
+}
+
+// Al elegir un color que ya tiene otro equipo, se intercambian los colores.
+export function elegirColor(teams: Team[], i: number, color: string): Team[] {
+  const anterior = teams[i].color;
+  return teams.map((t, j) => {
+    if (j === i) return { ...t, color };
+    if (t.color === color) return { ...t, color: anterior }; // swap con el que lo tenía
+    return t;
+  });
 }
 
 export const ESTADO_INICIAL: GameState = {
@@ -55,6 +81,9 @@ export const ESTADO_INICIAL: GameState = {
   turnScore: 0,
   running: false,
   falta: false,
+  clasicoSinFin: true,
+  turnosPorEquipo: [0, 0],
+  terminando: false,
 };
 
 // ── Persistencia de la última configuración usada ──
@@ -72,6 +101,7 @@ export function guardarConfig(s: GameState) {
       jugadores: s.jugadores,
       porJugador: s.porJugador,
       catsSel: s.catsSel,
+      clasicoSinFin: s.clasicoSinFin,
     }));
   } catch { /* sin storage */ }
 }
@@ -97,6 +127,7 @@ export function cargarConfig(): Partial<GameState> {
     if (typeof c.pasar === 'boolean') out.pasar = c.pasar;
     if (typeof c.jugadores === 'number') out.jugadores = Math.min(16, Math.max(4, c.jugadores));
     if ([3, 5, 7].includes(c.porJugador)) out.porJugador = c.porJugador;
+    if (typeof c.clasicoSinFin === 'boolean') out.clasicoSinFin = c.clasicoSinFin;
     if (Array.isArray(c.catsSel)) {
       const cats = c.catsSel.filter((x: unknown) => CATEGORIAS.includes(x as string));
       if (cats.length) out.catsSel = cats;
@@ -121,8 +152,7 @@ export function palabrasFiltradas(catsSel: string[]): Palabra[] {
 
 export function armarPartida(s: GameState): Pick<GameState, 'deck' | 'pool' | 'roundIdx' | 'teamIdx' | 'teams'> {
   const disponibles = mezclar(palabrasFiltradas(s.catsSel));
-  const modo = MODOS[s.mode];
-  const deck = modo.infinito
+  const deck = esSinFin(s)
     ? disponibles
     : disponibles.slice(0, Math.min(s.jugadores * s.porJugador, disponibles.length));
   return {

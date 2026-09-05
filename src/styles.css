@@ -46,8 +46,6 @@ input::placeholder { color: var(--placeholder); }
 /* ══════════ Utilidades compartidas ══════════ */
 .screen { position: absolute; inset: 0; }
 
-.anton { font-family: 'Anton', sans-serif; }
-
 /* Botones: efecto "hundido" al presionar */
 .press { cursor: pointer; transition: transform .1s, box-shadow .1s; }
 .press-2:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--tinta) !important; }
@@ -262,7 +260,7 @@ input::placeholder { color: var(--placeholder); }
   cursor: pointer;
 }
 /* Selector de color por equipo */
-.color-picker { display: flex; gap: 10px; padding-left: 30px; }
+.color-picker { display: flex; flex-wrap: wrap; gap: 10px; padding-left: 30px; }
 .color-swatch {
   width: 30px;
   height: 30px;
@@ -273,7 +271,6 @@ input::placeholder { color: var(--placeholder); }
 }
 .color-swatch.activo { box-shadow: 0 0 0 3px var(--crema), 0 0 0 6px var(--tinta); }
 .color-swatch.activo:active { transform: scale(0.92); }
-.color-swatch.usado { opacity: 0.25; cursor: default; }
 .chip-tiempo {
   flex: 1;
   text-align: center;
@@ -406,6 +403,18 @@ input::placeholder { color: var(--placeholder); }
   letter-spacing: 1px;
   cursor: pointer;
 }
+.preturn-ultima {
+  margin-top: 10px;
+  text-align: center;
+  padding: 12px;
+  border: 3px solid var(--tinta);
+  border-radius: 16px;
+  background: #FFC93C;
+  color: var(--tinta);
+  font-family: 'Anton', sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
 
 /* ══════════ Turno ══════════ */
 .turn { display: flex; flex-direction: column; padding: calc(var(--sat) + 16px) 20px calc(22px + var(--sab)); }
@@ -448,7 +457,7 @@ input::placeholder { color: var(--placeholder); }
   letter-spacing: 2px;
   padding: 5px;
 }
-.prohibidas-fila { text-align: center; padding: 6px 10px; font-weight: 800; font-size: 16px; color: #C22F28; border-top: 2px solid #FFD9D6; }
+.prohibidas-fila { text-align: center; padding: 6px 10px; font-weight: 800; font-size: 16px; color: var(--tinta); border-top: 2px solid rgba(32, 18, 51, 0.12); }
 .instruccion-pill {
   margin-top: 16px;
   background: var(--tinta);
@@ -460,7 +469,17 @@ input::placeholder { color: var(--placeholder); }
   letter-spacing: 1.5px;
   text-align: center;
 }
-.word-card-restantes { text-align: center; font-size: 12px; font-weight: 800; color: var(--atenuado); padding-bottom: 10px; }
+.word-card-restantes {
+  align-self: center;
+  margin: 4px auto 12px;
+  background: var(--tinta);
+  color: var(--crema);
+  font-family: 'Anton', sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  padding: 6px 16px;
+  border-radius: 999px;
+}
 .btn-pasar {
   flex: 1;
   background: #FFFFFF;

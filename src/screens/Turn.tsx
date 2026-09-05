@@ -56,8 +56,8 @@ export default function Turn(p: Props) {
           <div className="word-palabra">{p.palabra}</div>
           {!p.esRondaTaboo && <div className="instruccion-pill">{p.instruccion}</div>}
           {p.verProhibidas && (
-            <div className="prohibidas-box">
-              <div className="prohibidas-head">PROHIBIDO DECIR</div>
+            <div className="prohibidas-box" style={{ borderColor: p.equipoColor }}>
+              <div className="prohibidas-head" style={{ background: p.equipoColor, color: p.equipoTexto }}>PROHIBIDO DECIR</div>
               {p.prohibidas.map((t, i) => (
                 <div key={i} className="prohibidas-fila">{t}</div>
               ))}

@@ -45,11 +45,20 @@ export function sonidoBuzzer() { beep(520, 0.55, 'sawtooth', 0.4, 0, 180); beep(
 export function sonidoRonda() { beep(523, 0.12, 'triangle', 0.3); beep(659, 0.12, 'triangle', 0.3, 0.11); beep(784, 0.22, 'triangle', 0.32, 0.22); }
 export function sonidoTic() { beep(1150, 0.05, 'square', 0.2); }
 export function sonidoFalta() { beep(220, 0.18, 'square', 0.32); beep(160, 0.3, 'square', 0.32, 0.14); }
-// Fanfarria de victoria al terminar la partida: arpegio ascendente + remate brillante.
+// Fanfarria de victoria al terminar la partida: arpegio ascendente que sube,
+// repica y remata con un acorde grande y brillante (misma tonalidad, Do mayor).
 export function sonidoVictoria() {
-  beep(523, 0.14, 'triangle', 0.32, 0);      // Do
-  beep(659, 0.14, 'triangle', 0.32, 0.13);   // Mi
-  beep(784, 0.14, 'triangle', 0.32, 0.26);   // Sol
-  beep(1046, 0.42, 'triangle', 0.40, 0.40);  // Do agudo (remate)
-  beep(1568, 0.42, 'square', 0.12, 0.40);    // brillo suave encima
+  // Subida rápida
+  beep(523, 0.12, 'triangle', 0.30, 0.00);   // Do
+  beep(659, 0.12, 'triangle', 0.30, 0.11);   // Mi
+  beep(784, 0.12, 'triangle', 0.30, 0.22);   // Sol
+  beep(1046, 0.16, 'triangle', 0.34, 0.33);  // Do agudo
+  // Repique juguetón (ta-ta-taaa)
+  beep(784, 0.10, 'triangle', 0.30, 0.52);   // Sol
+  beep(1046, 0.10, 'triangle', 0.32, 0.64);  // Do
+  beep(1318, 0.44, 'triangle', 0.40, 0.78);  // Mi agudo, sostenido (remate)
+  // Acorde final grande de Do mayor + brillo
+  beep(1046, 0.55, 'triangle', 0.30, 0.78);  // Do
+  beep(1568, 0.55, 'triangle', 0.22, 0.78);  // Sol agudo
+  beep(2093, 0.55, 'square',   0.10, 0.80);  // Do muy agudo (brillo)
 }
