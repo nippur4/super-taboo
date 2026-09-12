@@ -3,9 +3,8 @@
 Juego de fiesta para un solo teléfono que se pasa de mano en mano (palabras prohibidas + mímica).
 (El proyecto nació como "Super Taboo" y se renombró para evitar conflictos de marca con Hasbro;
 el ID de paquete es `com.nico.decilosindecirlo`.)
-Implementación fiel al diseño de [design_handoff_super_taboo/](design_handoff_super_taboo/) con
-**React + TypeScript + Vite**, empaquetada como app Android nativa con **Capacitor** y
-monetizada con **AdMob**.
+Implementado con **React + TypeScript + Vite**, empaquetada como app Android nativa
+con **Capacitor** y monetizada con **AdMob**.
 
 ## Estructura
 
@@ -13,7 +12,6 @@ monetizada con **AdMob**.
   sonidos por osciladores en `src/audio.ts`, mazo en `src/palabras.ts`).
 - `src/ads.ts` — toda la monetización (banner + interstitial). **Acá van tus IDs de AdMob.**
 - `android/` — proyecto Android nativo generado por Capacitor (se compila con Android Studio).
-- `design_handoff_super_taboo/` — el paquete de diseño de referencia.
 
 ## Correr en el navegador (desarrollo)
 
